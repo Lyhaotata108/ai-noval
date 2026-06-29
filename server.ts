@@ -713,7 +713,11 @@ app.post("/api/ai/recommend-novels", async (req, res) => {
       }
     }
     
-    res.json(suggestions || []);
+    const validated = (suggestions || []).filter((s: any) => 
+  s && typeof s === 'object' && s.title
+);
+console.log('[recommend-novels] returning:', JSON.stringify(validated));
+res.json(validated);
   } catch (error: any) {
     console.error("Error generating recommendations:", error);
     res.status(500).json({ error: error.message || "Failed to generate recommendations" });
