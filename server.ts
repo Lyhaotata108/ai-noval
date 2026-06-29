@@ -247,7 +247,7 @@ async function fetchOpenAICompatible(
       messages: [{ role: "user", content: prompt }],
       stream: stream,
     };
-    if (jsonMode && (model.includes("gpt") || model.includes("deepseek"))) {
+    if (jsonMode) {
       bodyData.response_format = { type: "json_object" };
     }
   }
@@ -663,14 +663,7 @@ app.post("/api/ai/recommend-novels", async (req, res) => {
   const { genre, keywords } = req.body;
 
   try {
-    const prompt = `你是一位畅销网络小说策划大师。请基于题材分类 [${genre || "未指定"}] 以及用户给出的创意灵感关键词 [${keywords || "不限"}]，构思 3 个极具商业畅销潜力和脑洞大开的小说核心创意点子。
-
-每个灵感点子需要包含：
-1. 极具卖点 and 张力的小说名称（书名中必须包含书名号《》且辨识度极强）。
-2. 一段约 150-250 字左右、张力十足的小说创意简介（核心看点、宿命冲突和创新设定/金手指）。
-3. 对应的题材分类。
-4. 故事中的核心纠纷对峙。
-5. 最吸引网络小说读者的黄金看点/爽点（30字以内）。`;
+    const prompt = `你是一位畅销网络小说策划大师。请基于题材分类 [${genre || "未指定"}] 以及用户给出的创意灵感关键词 [${keywords || "不限"}]，构思 3 个极具商业畅销潜力和脑洞大开的小说核心创意点子。\n\n每个灵感点子需要包含：\n1. 极具卖点 and 张力的小说名称（书名中必须包含书名号《》且辨识度极强）。\n2. 一段约 150-250 字左右、张力十足的小说创意简介（核心看点、宿命冲突和创新设定/金手指）。\n3. 对应的题材分类。\n4. 故事中的核心纠纷对峙。\n5. 最吸引网络小说读者的黄金看点/爽点（30字以内）。\n\n【重要】直接返回 JSON 数组，不要包在对象里，不要有 recommendations 这个key，只输出JSON：\n[{"title":"《书名》","description":"简介","genre":"题材","core_conflict":"核心冲突","highlight":"爽点"}]`;
 
     const response = await aiGenerateContent({
       model: "gemini-3.5-flash",
